@@ -16,7 +16,7 @@ const RegisterScreen = ({ navigation }) => {
             return;
         }
         const response = await createUserWithEmailAndPassword(auth, email, password);
-        console.log(response);
+        // console.log(response);
         navigation.replace('Day');
     } catch (error) {
         setError(error.message);

@@ -1,24 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { auth } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+
+  const storeData = async (value) => {
+    try {
+       const token = await AsyncStorage.setItem('token', value);
+       navigation.replace('Day');
+    } catch (e) {
+        console.log(e);
+    }
+  };
+
 
   const handleLogin = async () => {
     try {
-        const response = await signInWithEmailAndPassword(auth, email, password);
-        console.log(response);
-        navigation.replace('Day');
+        const response = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+            // console.log(response);
+            const value = JSON.stringify(auth.currentUser.uid);
+            storeData(value);
+        }).catch((error) => {
+            setError(error.message);
+        });
+        // navigation.replace('Day');
     } catch (error) {
         setError(error.message);
     }
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Login</Text>
