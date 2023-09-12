@@ -19,8 +19,7 @@ const LoginScreen = ({ navigation }) => {
         console.log(e);
     }
   };
-
-
+  
   const handleLogin = async () => {
     try {
         const response = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
