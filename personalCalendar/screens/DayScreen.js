@@ -38,11 +38,15 @@ function DayScreen({navigation}) {
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity onPress={() => navigation.navigate('Calendar')} style={styles.calendar}>
+                <Image source={require('../assets/calendar.png')} style={{width: 50, height: 50}}></Image>
+            </TouchableOpacity>
             <DropdownMenu navigation={navigation}></DropdownMenu>
             <View style={styles.screen}>
-                <Text>DayScreen</Text>
+                <Text>{dataValues[0]}</Text>
                 <Button title="Try" onPress={() => retrieveData()}></Button>
                 <Button title="ADD" onPress={() => navigation.navigate('AddLogs')}></Button>
+                <Button title="Calendar" onPress={() => navigation.navigate('Calendar')}></Button>
                 <FlatList
                 data={dataKeys}
                 renderItem={({item, index}) => (
@@ -66,6 +70,12 @@ const styles = StyleSheet.create({
     },
     screen: {
         zIndex: -1,
+    },
+    calendar: {
+        position: 'absolute',
+        top: -40,
+        right: 70,
+        zIndex: 1,
     }
     
 })

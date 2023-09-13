@@ -11,6 +11,7 @@ import { AppRegistry } from 'react-native';
 import RegisterScreen from './screens/RegisterScreen';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CalendarScreen from './screens/CalendarScreen';
 const Stack = createStackNavigator();
 
 
@@ -46,6 +47,7 @@ export default function App() {
       <Stack.Navigator initialRouteName={initialScreen}>
         <Stack.Screen name="Register" component={RegisterScreen} />
          <Stack.Screen name="Login" component={LoginScreen} />
+         <Stack.Screen name="Calendar" component={CalendarScreen} />
          <Stack.Screen name="AddLogs" component={AddLogsScreen} />
          <Stack.Screen name="Day" component={DayScreen} />
          <Stack.Screen name="EditLogs" component={EditLogsScreen} />
