@@ -2,12 +2,22 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity, Image } from "react-native";
 import { useState } from "react";
+import { auth } from '../firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const DropdownMenu = () => {
+
+
+const DropdownMenu = ({navigation}) => {
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    const logout = async () => {
+        await auth.signOut();
+        navigation.replace('Login');
+        AsyncStorage.setItem('token', '');
+    }
+
     return (
-        
         <View>
              <TouchableOpacity onPress={() => setDropdownVisible((prev) => !prev)}>
             <Image style={styles.image} source={require("../assets/profile.png")} ></Image>
@@ -16,7 +26,9 @@ const DropdownMenu = () => {
             <View style={styles.container}>
                 <Text style={styles.text}>Profile</Text>
                 <Text style={styles.text}>Settings</Text>
-                <Text style={styles.text}>Logout</Text> 
+                <TouchableOpacity onPress={logout}>
+                    <Text style={styles.text}>Logout</Text> 
+                </TouchableOpacity>
             </View> : null}
         </View>
     );

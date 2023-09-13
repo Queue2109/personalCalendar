@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { auth } from '../firebaseConfig';
+import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { set, ref } from 'firebase/database';
 
 
 const RegisterScreen = ({ navigation }) => {
@@ -10,12 +11,21 @@ const RegisterScreen = ({ navigation }) => {
   const [error, setError] = useState('');
   const [matchingPasswords, setMatchingPasswords] = useState('');
 
+  addToDatabase = (uid) => {
+    set(ref(db, 'users/' + uid), {
+      email: email,
+      dateOfRegistration: new Date().toISOString().slice(0, 10),
+      logs: [],
+    });
+  }
+
   const handleLogin = async () => {
     try {
         if(matchingPasswords != '') {
             return;
         }
         const response = await createUserWithEmailAndPassword(auth, email, password);
+        addToDatabase(auth.currentUser.uid);
         // console.log(response);
         navigation.replace('Day');
     } catch (error) {

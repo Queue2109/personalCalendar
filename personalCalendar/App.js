@@ -21,6 +21,7 @@ export default function App() {
     const retrieveData = async () => {
       try {
           const token = await AsyncStorage.getItem('token');
+          console.log(token);
           if(token) {
             setInitialScreen("Day");
           } else {
@@ -32,6 +33,7 @@ export default function App() {
       }
       };
       retrieveData();
+      console.log(initialScreen);
   }, []);
 
   if(initialScreen === '') {
