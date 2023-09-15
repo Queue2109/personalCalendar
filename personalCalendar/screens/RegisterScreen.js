@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { set, ref } from 'firebase/database';
+import { set, ref, get } from 'firebase/database';
+import { getCurrentDate } from '../components/CommonFunctions';
 
 
 const RegisterScreen = ({ navigation }) => {
@@ -14,7 +15,7 @@ const RegisterScreen = ({ navigation }) => {
   addToDatabase = (uid) => {
     set(ref(db, 'users/' + uid), {
       email: email,
-      dateOfRegistration: new Date().toISOString().slice(0, 10),
+      dateOfRegistration: getCurrentDate(),
       logs: [],
     });
   }

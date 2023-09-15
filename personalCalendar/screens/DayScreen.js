@@ -1,14 +1,19 @@
 import {React, useState, useEffect} from "react";
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth, db } from '../firebaseConfig';
 import DropdownMenu from "../components/DropdownMenu";
-import { get, onValue, ref, child } from "firebase/database";
+import { get, ref, child, set } from "firebase/database";
+import { getCurrentDate } from "../components/CommonFunctions";
+
+// for each day separate, there has to be a new log into the database
+// should i make this log when a user presses on day? probably.
+// one log per day, and then the user can add to that log
 
 function DayScreen({navigation}) {
 
     const [dataValues, setDataValues] = useState([]);
     const [dataKeys, setDataKeys] = useState([]);
+    const [today, getToday] = useState(new Date());
 
     useEffect(() => {
         retrieveData();
@@ -16,13 +21,17 @@ function DayScreen({navigation}) {
     
     const retrieveData = async () => {
         try {
-            get(child(ref(db), 'users/' + auth.currentUser.uid)).then((snapshot) => {
+            get(child(ref(db), 'users/' + auth.currentUser.uid + '/' + getCurrentDate())).then((snapshot) => {
                 if (snapshot.exists()) {
                   console.log(snapshot.val());
                     setDataValues(Object.values(snapshot.val()));
                     setDataKeys(Object.keys(snapshot.val()));
                 } else {
                   console.log("No data available");
+                    //   make log for this day
+                    set(ref(db, 'users/' + auth.currentUser.uid + '/' + getCurrentDate()), {
+                        mood: '',
+                    });
                 }
               }
             ).catch((error) => {
@@ -46,7 +55,6 @@ function DayScreen({navigation}) {
                 <Text>{dataValues[0]}</Text>
                 <Button title="Try" onPress={() => retrieveData()}></Button>
                 <Button title="ADD" onPress={() => navigation.navigate('AddLogs')}></Button>
-                <Button title="Calendar" onPress={() => navigation.navigate('Calendar')}></Button>
                 <FlatList
                 data={dataKeys}
                 renderItem={({item, index}) => (
