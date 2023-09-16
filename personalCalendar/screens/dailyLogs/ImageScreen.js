@@ -1,12 +1,12 @@
 // CameraScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { auth } from '../../firebaseConfig';
-import { storage } from '../../firebaseConfig';
-import { Camera, CameraType } from 'expo-camera';
+import { auth, storage } from '../../firebaseConfig';
+import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import { Entypo } from "@expo/vector-icons";
-// import CameraButton from '../../components/CameraButton';
+import { getCurrentDate } from '../../components/CommonFunctions';
+import { ref, uploadBytes } from 'firebase/storage';
 
 const ImageScreen = ({ navigation }) => {
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -14,6 +14,17 @@ const ImageScreen = ({ navigation }) => {
     const [type, setType] = useState(Camera.Constants.Type.front);
     const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
     const cameraRef = useRef(null);
+
+    const saveImage = async () => {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const storageRef = ref(storage, 'images/' + auth.currentUser.uid + '/' + getCurrentDate() + '.jpg');
+        uploadBytes(storageRef, blob).then((snapshot) => {
+            console.log('Uploaded a blob or file!');
+        });
+
+        navigation.replace('Day');
+    }
 
     const takePicture = async () => {
         if(cameraRef) {
@@ -40,57 +51,72 @@ const ImageScreen = ({ navigation }) => {
         return <Text>No camera permissions</Text>;
     }
 
-  return (
-    <View style={styles.container}>
-        {!image? 
-        <Camera
-            style={styles.camera}
-            type={type}
-            flashMode={flash}
-            ref={cameraRef}
-            ratio='16:9'
-            
-        
-        >
-        </Camera>
-        
-        :
-        <Image source={{uri: image}} style={styles.camera}></Image>
-       }
-        {!image ? 
-            <TouchableOpacity onPress={takePicture} style={styles.button}> 
+    return (
+        <View style={styles.background}>
+          <View style={styles.cameraContainer}>
+            {!image ? (
+              <Camera
+                style={styles.camera}
+                type={type}
+                flashMode={flash}
+                ref={cameraRef}
+                ratio='1:1'
+              ></Camera>
+            ) : (
+              <Image source={{ uri: image }} style={[styles.camera, styles.image]}></Image>
+            )}
+          </View>
+          {!image ? (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={takePicture} style={styles.captureButton}>
                 <Entypo name="circle" size={70} color={'white'}></Entypo>
-            </TouchableOpacity>
-         : 
-         <View>
-         <Button title='Retake' icon='retweet' onPress={() => setImage(null)}></Button>
-         <Button title='Save' icon="check"></Button></View>}
-    </View>
-  );
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.buttons}>
+              <TouchableOpacity onPress={() => setImage(null)}>
+                <Entypo name="ccw" size={70} color={'white'}></Entypo>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => saveImage()}>
+                <Entypo name='check' size={70} color={'white'}></Entypo>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      );
 }
 
-const styles = StyleSheet.create({
-    container: {
+const styles = StyleSheet.create({ 
+    background: {
         flex: 1,
-        justifyContent: 'flex-end'
+        backgroundColor: 'black',
     },
-    camera: {
-        flex: 1,
-        borderRadius: 20,
-    },
-    button: {
-        marginBottom: 20,
-        alignItems: 'center',   
-        position: 'absolute',
-        left: '40%',
-        bottom: 10,
-    },
-    onSave: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-        paddingHorizontal: 20,
-    }
+  cameraContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  camera: {
+    aspectRatio: 1, 
+    width: '100%', 
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  captureButton: {
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 20, // Space between buttons and the camera preview
+    paddingHorizontal: 20,
+  },
+  image: {
+    transform: [{scaleX: -1}]
+  }
+  // ... (other styles)
 });
-
 export default ImageScreen;
