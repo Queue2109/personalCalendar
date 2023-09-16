@@ -1,8 +1,10 @@
 import React, { Component, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { reformatDate } from '../components/CommonFunctions';
 
-function CalendarScreen()  {
+function CalendarScreen({navigation})  {
 
     return (
       <View style={styles.container}>
@@ -15,7 +17,11 @@ function CalendarScreen()  {
           maxDate={'2023-12-31'}
           // Handler which gets executed on day press. Default = undefined
           onDayPress={(day) => {
-            console.log('selected day', day);
+            console.log('selected day', day.dateString);
+            const reformattedDate = reformatDate(day.dateString);
+            AsyncStorage.setItem('date', reformattedDate);
+            navigation.replace('Day');
+            
           }}
           
           firstDay={1}

@@ -7,6 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { Entypo } from "@expo/vector-icons";
 import { getCurrentDate } from '../../components/CommonFunctions';
 import { ref, uploadBytes } from 'firebase/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ImageScreen = ({ navigation }) => {
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -16,9 +17,10 @@ const ImageScreen = ({ navigation }) => {
     const cameraRef = useRef(null);
 
     const saveImage = async () => {
+        const currentDate = await AsyncStorage.getItem('date');
         const response = await fetch(image);
         const blob = await response.blob();
-        const storageRef = ref(storage, 'images/' + auth.currentUser.uid + '/' + getCurrentDate() + '.jpg');
+        const storageRef = ref(storage, 'images/' + auth.currentUser.uid + '/' + currentDate + '.jpg');
         uploadBytes(storageRef, blob).then((snapshot) => {
             console.log('Uploaded a blob or file!');
         });

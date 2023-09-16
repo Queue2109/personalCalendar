@@ -50,7 +50,7 @@ export default function App() {
          <Stack.Screen name="Login" component={LoginScreen} />
          <Stack.Screen name="Calendar" component={CalendarScreen} />
          <Stack.Screen name="AddLogs" component={AddLogsScreen} />
-         <Stack.Screen name="Day" component={DayScreen} />
+         <Stack.Screen name="Day" component={DayScreen}/>
          <Stack.Screen name="EditLogs" component={EditLogsScreen} />
          <Stack.Screen name="Image" component={ImageScreen} />
       </Stack.Navigator>
