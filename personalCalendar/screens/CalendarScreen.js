@@ -1,7 +1,6 @@
 import React, { Component, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { reformatDate } from '../components/CommonFunctions';
 
 function CalendarScreen({navigation})  {
@@ -19,9 +18,7 @@ function CalendarScreen({navigation})  {
           onDayPress={(day) => {
             console.log('selected day', day.dateString);
             const reformattedDate = reformatDate(day.dateString);
-            AsyncStorage.setItem('date', reformattedDate);
-            navigation.replace('Day');
-            
+            navigation.replace('Day', {date: reformattedDate});
           }}
           
           firstDay={1}

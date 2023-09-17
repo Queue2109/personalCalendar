@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
         const response = await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
             // console.log(response);
             const value = JSON.stringify(auth.currentUser.uid);
-            storeData(value);
+            storeData(value.substring(1, value.length - 1));
         }).catch((error) => {
             setError(error.message);
         });

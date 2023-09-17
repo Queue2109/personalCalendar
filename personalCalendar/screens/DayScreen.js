@@ -11,63 +11,59 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // should i make this log when a user presses on day? probably.
 // one log per day, and then the user can add to that log
 
-function DayScreen({navigation}) {
+function DayScreen({navigation, route}) {
 
     const [dataValues, setDataValues] = useState([]);
     const [dataKeys, setDataKeys] = useState([]);
     const [image, setImage] = useState(null);
-    const [day, setDay] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+    const {date} = route.params;
     
     const setDayFun = async () => {
-        const temp = await AsyncStorage.getItem('date');
-        console.log(temp + "uau");
-        if(temp == null) {
-            setDay(getCurrentDate());
-            AsyncStorage.setItem('date', getCurrentDate());
-        } else {
-            setDay(temp);
-        }
+        const token = await AsyncStorage.getItem('token');
+        setCurrentUser(token);
+        retrieveData();
         
     }
 
     const getImage = async () => {
         try {
-          const imagePath = `images/${auth.currentUser.uid}/${day}.jpg`;
-          const storageReference = storageRef(storage, imagePath);
-      
-          // Attempt to get the download URL for the image
-          const url = await getDownloadURL(storageReference);
-          setImage(url);
-          
-          return true;
-
+            const imagePath = `images/${currentUser}/${date}.jpg`;
+            console.log(imagePath);
+            const storageReference = storageRef(storage, imagePath);
+    
+            // Attempt to get the download URL for the image
+            const url = await getDownloadURL(storageReference);
+            setImage(url);
+    
+            return true;
         } catch (error) {
-          if (error.code === 'storage/object-not-found') {
-            // Handle the case where the image does not exist
-            console.log('Image does not exist.');
-            return false;
-          } else {
-            // Handle other errors
-            console.error('Error getting image:', error);
-            throw error;
-          }
+            if (error.code === 'storage/object-not-found') {
+                // Handle the case where the image does not exist
+                console.log('Image does not exist.');
+                return false;
+            } else {
+                // Handle other errors
+                console.error('Error getting image:', error);
+                throw error;
+            }
         }
     };
     
+    
     const retrieveData = async () => {
         try {
-            get(child(databaseRef(db), 'users/' + auth.currentUser.uid + '/' + day)).then((snapshot) => {
+            get(child(databaseRef(db), 'users/' + currentUser + '/' + date)).then((snapshot) => {
                 if (snapshot.exists()) {
                   console.log(snapshot.val());
-                  console.log("this day:" + day);
+                  
                     setDataValues(Object.values(snapshot.val()));
                     setDataKeys(Object.keys(snapshot.val()));
                     getImage();
                 } else {
                   console.log("No data available");
-                    //   make log for this day
-                
-                    set(databaseRef(db, 'users/' + auth.currentUser.uid + '/' + day), {
+                    //   make log for this date
+                    set(databaseRef(db, 'users/' + currentUser + '/' + date), {
                         mood: '',
                     });
                 }
@@ -75,20 +71,17 @@ function DayScreen({navigation}) {
             ).catch((error) => {
                 console.error(error);
               });
-            // console.log(token);
         } catch (e) {
             console.log(e);
-            // saving error
         }
     };
+
+    useEffect(() => {
+        retrieveData();
+    }, [currentUser, image]);
     
     useEffect(() => {
-        const fetchData = async () => {
-            await setDayFun(); // Wait for setDayFun to complete
-            await retrieveData(); // Wait for retrieveData to complete
-         };
-      
-          fetchData();
+        setDayFun();
     }, []);
 
     
@@ -100,7 +93,7 @@ function DayScreen({navigation}) {
             <DropdownMenu navigation={navigation}></DropdownMenu>
             <View style={styles.screen}>
                 <Text>{dataValues[0]}</Text>
-                <Button title="ADD" onPress={() => navigation.navigate('AddLogs')}></Button>
+                <Button title="ADD" onPress={() => navigation.navigate('AddLogs', {date: date})}></Button>
                 <View style={{alignItems: 'center'}}>
                     <Image style={styles.image} source={{uri: image}}></Image>
                 </View>
@@ -112,7 +105,7 @@ function DayScreen({navigation}) {
                         <Text>{dataValues[index]}</Text>
                     </View>
                 )}
-                keyExtractor={(item, index) => item.toString()} 
+                keyExtractor={(item) => item.toString()} 
                 ></FlatList>
 
             </View>
