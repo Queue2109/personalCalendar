@@ -4,17 +4,12 @@ import { db } from '../../firebaseConfig';
 import { ref, set, push } from 'firebase/database';
 import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ScrollComponent from '../../components/ScrollComponent';
 
 const MoodScreen = ({navigation, route}) => {
   
     const {date} = route.params;
-    const arrayOfMoods = ["happy", "sad", "angry", "tired", "anxious"];
-    const addToDatabase = async (mood) => {
-        const uid = await AsyncStorage.getItem('token');
-       
-        set(ref(db, 'users/' + uid + '/' + date + '/mood/' + mood ), arrayOfMoods[mood]);
-        console.log(mood);
-    }
+    const arrayOfImages = [require('../../assets/emoji.png'), require('../../assets/emoji.png'), require('../../assets/emoji.png'), require('../../assets/emoji.png'), require('../../assets/emoji.png')]
     return (
         <View style={styles.container}>
             <View style={styles.up}>
@@ -22,36 +17,12 @@ const MoodScreen = ({navigation, route}) => {
                     How are you feeling today?
                 </Text>
             </View>
-            <ScrollView horizontal={true} style={styles.scrollView} >
-                <TouchableOpacity onPress={() => addToDatabase(0)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => addToDatabase(1)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => addToDatabase(2)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => addToDatabase(3)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => addToDatabase(4)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => addToDatabase(5)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => addToDatabase(6)}>
-                    <Image style={styles.png} source={require('../../assets/emoji.png')} />
-                </TouchableOpacity>
-            </ScrollView>
+            <ScrollComponent  imageArray={arrayOfImages} type={"mood"} date={date} style={styles.scrollView}></ScrollComponent>
             <View style={styles.up}>
                 <Entypo name='check' size={70} color={'black'} style={styles.check} onPress={() => navigation.goBack()}></Entypo>
             </View>
-
         </View>
-    );
-    
+    );   
 }
 
 const styles = StyleSheet.create({
@@ -62,17 +33,13 @@ const styles = StyleSheet.create({
         margin: 20,
       },
     up: {
-        flex: 3,
+        flex: 8,
         alignItems: 'center',
         justifyContent: 'flex-end',
         marginBottom: 20,
     },
     scrollView: {
         flex: 1,
-        backgroundColor: 'pink',
-        paddingTop: 30,
-        borderRadius: 20,
-
     },
     question: {
         fontSize: 20,
@@ -81,7 +48,5 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },    
 });
-
-
 
 export default MoodScreen;

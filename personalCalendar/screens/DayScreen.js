@@ -3,7 +3,6 @@ import { View, Text, Button, Image, TouchableOpacity, StyleSheet, FlatList } fro
 import { db, storage } from '../firebaseConfig';
 import DropdownMenu from "../components/DropdownMenu";
 import { get, ref as databaseRef, child, set } from "firebase/database";
-import { getCurrentDate, reformatDate } from "../components/CommonFunctions";
 import { getDownloadURL, ref as storageRef} from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

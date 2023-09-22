@@ -1,3 +1,7 @@
+import { set, ref, get, child } from "firebase/database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { db } from "../firebaseConfig";
+
 export function getCurrentDate() {
     const currentDate = new Date();
     const day = currentDate.getDate().toString().padStart(2, '0');
@@ -34,3 +38,54 @@ export function reformatDate(date) {
 
   return formattedDate;
 }
+
+const arrayOfMoods = ["happy", "sad", "angry", "tired", "anxious"];
+const arrayOfFlows = ["none", "light", "medium", "heavy", "spotting"];
+const arrayOfPeriods = ["yes", "no"];
+const uid = async () => {
+  const uid = await AsyncStorage.getItem('token');
+  return uid;
+}
+
+export const addToDatabase = async (index, type, date) => {
+  const uid = await AsyncStorage.getItem('token');
+  const value = () => {
+    if(type === "mood") {
+      return arrayOfMoods[index];
+    } else if(type === "flow") {
+      return arrayOfFlows[index];
+    } else if(type === "period") {
+      return arrayOfPeriods[index];
+    }
+  }
+  console.log(value);
+  try{
+    if(type === "mood") {
+    set(ref(db, `users/${uid}/${date}/${type}/${index}`), value());
+    } else {
+      set(ref(db, `users/${uid}/${date}/${type}`), value());
+    }
+
+  } catch(e) {
+    console.log(e);
+  }
+       
+}
+
+export const retrieveData = async (path, date) => {
+  try {
+    const uid = await AsyncStorage.getItem('token');
+    get(child(ref(db), `users/${uid}/${date}/${path}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          return snapshot.val()
+        } else {
+          console.log("No data available");
+        }
+      }
+    ).catch((error) => {
+        console.error(error);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};

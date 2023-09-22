@@ -10,6 +10,7 @@ function AddLogsScreen({navigation, route}) {
         <View style={styles.container}>
             <Log navigation={navigation} text={'Take a picture'} screen={'Image'} day={date}></Log>
             <Log navigation={navigation} text={'Mood'} screen={'Mood'} day={date}></Log>
+            <Log navigation={navigation} text={'Log period'} screen={'Period'} day={date}></Log>
         </View>
     );
 }

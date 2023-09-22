@@ -15,6 +15,7 @@ import CalendarScreen from './screens/CalendarScreen';
 import { getCurrentDate } from './components/CommonFunctions';
 import ImageScreen from './screens/dailyLogs/ImageScreen';
 import MoodScreen from './screens/dailyLogs/MoodScreen';
+import PeriodScreen from './screens/dailyLogs/PeriodScreen';
 
 const Stack = createStackNavigator();
 
@@ -45,9 +46,6 @@ export default function App() {
     return null;
   }
 
-  
-
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialScreen}>
@@ -59,6 +57,7 @@ export default function App() {
          <Stack.Screen name="EditLogs" component={EditLogsScreen} />
          <Stack.Screen name="Image" component={ImageScreen} />
          <Stack.Screen name="Mood" component={MoodScreen} options={{headerShown: false}} />
+         <Stack.Screen name="Period" component={PeriodScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
