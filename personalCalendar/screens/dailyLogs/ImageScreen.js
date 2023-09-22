@@ -24,7 +24,7 @@ const ImageScreen = ({ navigation, route }) => {
         uploadBytes(storageRef, blob).then((snapshot) => {
             console.log('Uploaded a blob or file!');
         });
-        navigation.replace('Day', {date: date});
+        navigation.goBack();
     }
 
     const takePicture = async () => {

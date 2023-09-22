@@ -1,6 +1,6 @@
 import {React, useState, useEffect} from "react";
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { auth, db, storage } from '../firebaseConfig';
+import { db, storage } from '../firebaseConfig';
 import DropdownMenu from "../components/DropdownMenu";
 import { get, ref as databaseRef, child, set } from "firebase/database";
 import { getCurrentDate, reformatDate } from "../components/CommonFunctions";
@@ -57,8 +57,8 @@ function DayScreen({navigation, route}) {
                 if (snapshot.exists()) {
                   console.log(snapshot.val());
                   
-                    setDataValues(Object.values(snapshot.val()));
-                    setDataKeys(Object.keys(snapshot.val()));
+                    // setDataValues(Object.values(snapshot.val()));
+                    // setDataKeys(Object.keys(snapshot.val()));
                     getImage();
                 } else {
                   console.log("No data available");

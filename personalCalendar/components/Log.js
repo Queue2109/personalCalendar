@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'salmon',
         borderRadius: 10,
         marginHorizontal: 20,
+        marginVertical: 10,
     },
     text: {
         textAlign: 'center',

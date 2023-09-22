@@ -14,6 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CalendarScreen from './screens/CalendarScreen';
 import { getCurrentDate } from './components/CommonFunctions';
 import ImageScreen from './screens/dailyLogs/ImageScreen';
+import MoodScreen from './screens/dailyLogs/MoodScreen';
+
 const Stack = createStackNavigator();
 
 
@@ -43,20 +45,24 @@ export default function App() {
     return null;
   }
 
+  
+
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialScreen}>
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} options={{header: null}}/>
          <Stack.Screen name="Login" component={LoginScreen} />
          <Stack.Screen name="Calendar" component={CalendarScreen} />
          <Stack.Screen name="AddLogs" component={AddLogsScreen} />
          <Stack.Screen name="Day" component={DayScreen} initialParams={{date: getCurrentDate()}}/>
          <Stack.Screen name="EditLogs" component={EditLogsScreen} />
          <Stack.Screen name="Image" component={ImageScreen} />
+         <Stack.Screen name="Mood" component={MoodScreen} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 
 AppRegistry.registerComponent('App', () => App);
