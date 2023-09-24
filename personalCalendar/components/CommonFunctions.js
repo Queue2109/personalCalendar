@@ -1,4 +1,4 @@
-import { set, ref, get, child } from "firebase/database";
+import { set, ref, get, child, query, orderByChild, equalTo, onChildChanged } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../firebaseConfig";
 
@@ -39,13 +39,17 @@ export function reformatDate(date) {
   return formattedDate;
 }
 
+const stringToDate = (date) => {
+// 2023-12-31
+  const [day, month, year] = date.split('-');
+  
+  const dateObject = `${year}-${month}-${day}`
+  return dateObject;
+}
+
 const arrayOfMoods = ["happy", "sad", "angry", "tired", "anxious"];
 const arrayOfFlows = ["none", "light", "medium", "heavy", "spotting"];
 const arrayOfPeriods = ["yes", "no"];
-const uid = async () => {
-  const uid = await AsyncStorage.getItem('token');
-  return uid;
-}
 
 export const addToDatabase = async (index, type, date) => {
   const uid = await AsyncStorage.getItem('token');
@@ -89,3 +93,34 @@ export const retrieveData = async (path, date) => {
     console.log(e);
   }
 };
+
+// export const loggedDates = async () => {
+//   const uid = await AsyncStorage.getItem('token');
+//   const commentsRef = ref(db, 'users/' + uid);
+//   const snapshot = await get(commentsRef);
+//   snapshot.forEach((childSnapshot) => {
+//     console.log("here in function" + childSnapshot.key);
+//     onChildChanged(childSnapshot, (data) => {
+//       console.log("data added " + data.val());
+//   });
+//   })
+// }
+
+export const extractPeriodDates = async () => {
+  try {
+    const uid = await AsyncStorage.getItem('token');
+    const periodDates = [];
+    const datesObject = {};
+    const dates = query(ref(db, 'users/' + uid), orderByChild('period'), equalTo('yes'));
+    const snapshot = await get(dates);
+    snapshot.forEach((childSnapshot) => {
+      periodDates.push(stringToDate(childSnapshot.key));
+    });
+    periodDates.forEach((date) => {
+      datesObject[date] = {selected: true, marked: true, selectedColor: '#f58e91'};
+    });
+    return datesObject;
+  } catch (error) {
+    console.log(error);
+  }
+}

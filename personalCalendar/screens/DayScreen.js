@@ -22,7 +22,6 @@ function DayScreen({navigation, route}) {
         const token = await AsyncStorage.getItem('token');
         setCurrentUser(token);
         retrieveData();
-        
     }
 
     const getImage = async () => {
@@ -57,13 +56,13 @@ function DayScreen({navigation, route}) {
                   console.log(snapshot.val());
                   
                     // setDataValues(Object.values(snapshot.val()));
-                    // setDataKeys(Object.keys(snapshot.val()));
+                    // setDataKeys(Object.keys(snapshot.val()));                
                     getImage();
                 } else {
                   console.log("No data available");
                     //   make log for this date
                     set(databaseRef(db, 'users/' + currentUser + '/' + date), {
-                        mood: '',
+                        period: "no",
                     });
                 }
               }
