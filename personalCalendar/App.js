@@ -7,7 +7,7 @@ import AddLogsScreen from './screens/AddLogsScreen';
 import DayScreen from './screens/DayScreen';
 import EditLogsScreen from './screens/EditLogsScreen';
 import LoginScreen from './screens/LoginScreen';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, View } from 'react-native';
 import RegisterScreen from './screens/RegisterScreen';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +16,9 @@ import { getCurrentDate } from './components/CommonFunctions';
 import ImageScreen from './screens/dailyLogs/ImageScreen';
 import MoodScreen from './screens/dailyLogs/MoodScreen';
 import PeriodScreen from './screens/dailyLogs/PeriodScreen';
+import { CalendarIcon } from './components/CalendarIcon';
+import DropdownMenu from './components/DropdownMenu';
+import CustomHeader from './components/CustomHeader';
 
 const Stack = createStackNavigator();
 
@@ -53,7 +56,11 @@ export default function App() {
          <Stack.Screen name="Login" component={LoginScreen} />
          <Stack.Screen name="Calendar" component={CalendarScreen} />
          <Stack.Screen name="AddLogs" component={AddLogsScreen} />
-         <Stack.Screen name="Day" component={DayScreen} initialParams={{date: getCurrentDate()}}/>
+         <Stack.Screen name="Day" component={DayScreen} initialParams={{date: getCurrentDate(), }} options={{
+          header: () => (
+            <CustomHeader></CustomHeader>
+          ),
+         }} />
          <Stack.Screen name="EditLogs" component={EditLogsScreen} />
          <Stack.Screen name="Image" component={ImageScreen} />
          <Stack.Screen name="Mood" component={MoodScreen} options={{headerShown: false}} />

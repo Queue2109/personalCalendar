@@ -7,6 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { Entypo } from "@expo/vector-icons";
 import { ref, uploadBytes } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addToDatabase } from '../../components/CommonFunctions';
 
 const ImageScreen = ({ navigation, route }) => {
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -23,6 +24,7 @@ const ImageScreen = ({ navigation, route }) => {
         const storageRef = ref(storage, 'images/' + currentUser + '/' + date + '.jpg');
         uploadBytes(storageRef, blob).then((snapshot) => {
             console.log('Uploaded a blob or file!');
+            addToDatabase(0, "image", date);
         });
         navigation.goBack();
     }

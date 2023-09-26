@@ -18,7 +18,7 @@ const DropdownMenu = ({navigation}) => {
     }
 
     return (
-        <View>
+        <View style={styles.upperContainer}>
              <TouchableOpacity onPress={() => setDropdownVisible((prev) => !prev)}>
             <Image style={styles.image} source={require("../assets/profile.png")} ></Image>
             </TouchableOpacity>
@@ -35,16 +35,21 @@ const DropdownMenu = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    upperContainer: {
+        position: 'absolute',
+        right: 0,
+        top: 30,
+    },
     container: {
         width: 150,
         height: 150,
         position: 'absolute',
         right: 0,
-        top: 10,
         backgroundColor: 'white',
         borderRadius: 5,
         borderColor: 'black',
         borderWidth: 1,
+        top: 70,
         padding: 20,
         marginRight: 5,
     },
@@ -57,9 +62,6 @@ const styles = StyleSheet.create({
     image: {
         width: 50,
         height: 50,
-        position: 'absolute',
-        right: 0,
-        top: -40,
     },
     text: {
         fontSize: 20,

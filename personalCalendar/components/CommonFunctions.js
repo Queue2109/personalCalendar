@@ -15,15 +15,9 @@ export function getCurrentDate() {
 export function reformatDate(date) {
     // Parse the input date string into a Date object
   const dateParts = date.split('-');
-  console.log(dateParts);
   const year = parseInt(dateParts[0]);
   const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed in JavaScript
   const day = parseInt(dateParts[2]);
-
-  console.log(year);
-  console.log(month);
-  console.log(day);
-
 
   const inputDateObj = new Date(year, month, day);
 
@@ -34,7 +28,6 @@ export function reformatDate(date) {
 
   // Combine the formatted components into the desired format
   const formattedDate = `${formattedDay}-${formattedMonth}-${formattedYear}`;
-    console.log( "hello",formattedDate);
 
   return formattedDate;
 }
@@ -60,9 +53,10 @@ export const addToDatabase = async (index, type, date) => {
       return arrayOfFlows[index];
     } else if(type === "period") {
       return arrayOfPeriods[index];
+    } else if(type === "image") {
+      return "yes";
     }
   }
-  console.log(value);
   try{
     if(type === "mood") {
     set(ref(db, `users/${uid}/${date}/${type}/${index}`), value());
@@ -73,7 +67,6 @@ export const addToDatabase = async (index, type, date) => {
   } catch(e) {
     console.log(e);
   }
-       
 }
 
 export const retrieveData = async (path, date) => {
@@ -102,13 +95,16 @@ export const loggedDates = async () => {
 
   snapshot.forEach((childSnapshot) => {
     const numOfLogs = Object.keys(childSnapshot.val()).length;
+    const date = stringToDate(childSnapshot.key);
+    if(date.length > 10) {
+      return false;
+    }
     if(numOfLogs > 1) {
-      const date = stringToDate(childSnapshot.key);
       objects[date] = {marked: true};
       if(childSnapshot.val().period == "yes") {
         objects[date] = {marked: true, selected: true, selectedColor: '#f58e91'};
-      }
-    } 
+      } 
+    }
   })
   return objects;
 }
