@@ -1,15 +1,14 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { extractPeriodDates, loggedDates, reformatDate } from '../components/CommonFunctions';
+import { loggedDates as funLoggedDates, reformatDate } from '../components/CommonFunctions';
 
 function CalendarScreen({navigation})  {
-  const [periodDates, setPeriodDates] = useState({});
+  const [loggedDates, setLoggedDates] = useState({});
   useEffect(() => {
-    extractPeriodDates().then((dates) => {
-      setPeriodDates(dates);
+    funLoggedDates().then((dates) => {
+      setLoggedDates(dates);
     });
-    // async () => await loggedDates();
   }, [])
   
     return (
@@ -27,7 +26,7 @@ function CalendarScreen({navigation})  {
             const reformattedDate = reformatDate(day.dateString);
             navigation.replace('Day', {date: reformattedDate});
           }}
-          markedDates={periodDates}
+          markedDates={loggedDates}
 
           firstDay={1}
 

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 import Log from "../components/Log";
+import { loggedDates } from "../components/CommonFunctions";
 
 function AddLogsScreen({navigation, route}) {
     const {date} = route.params;
-    const {moodModal, setMoodModal} = useState(false);
+
+    useEffect(() => {
+        loggedDates();
+    }, [])
 
     return (
         <View style={styles.container}>

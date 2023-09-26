@@ -1,4 +1,4 @@
-import { set, ref, get, child, query, orderByChild, equalTo, onChildChanged } from "firebase/database";
+import { set, ref, get, child } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../firebaseConfig";
 
@@ -94,33 +94,21 @@ export const retrieveData = async (path, date) => {
   }
 };
 
-// export const loggedDates = async () => {
-//   const uid = await AsyncStorage.getItem('token');
-//   const commentsRef = ref(db, 'users/' + uid);
-//   const snapshot = await get(commentsRef);
-//   snapshot.forEach((childSnapshot) => {
-//     console.log("here in function" + childSnapshot.key);
-//     onChildChanged(childSnapshot, (data) => {
-//       console.log("data added " + data.val());
-//   });
-//   })
-// }
+export const loggedDates = async () => {
+  const uid = await AsyncStorage.getItem('token');
+  const commentsRef = ref(db, 'users/' + uid);
+  const snapshot = await get(commentsRef);
+  const objects = {};
 
-export const extractPeriodDates = async () => {
-  try {
-    const uid = await AsyncStorage.getItem('token');
-    const periodDates = [];
-    const datesObject = {};
-    const dates = query(ref(db, 'users/' + uid), orderByChild('period'), equalTo('yes'));
-    const snapshot = await get(dates);
-    snapshot.forEach((childSnapshot) => {
-      periodDates.push(stringToDate(childSnapshot.key));
-    });
-    periodDates.forEach((date) => {
-      datesObject[date] = {selected: true, marked: true, selectedColor: '#f58e91'};
-    });
-    return datesObject;
-  } catch (error) {
-    console.log(error);
-  }
+  snapshot.forEach((childSnapshot) => {
+    const numOfLogs = Object.keys(childSnapshot.val()).length;
+    if(numOfLogs > 1) {
+      const date = stringToDate(childSnapshot.key);
+      objects[date] = {marked: true};
+      if(childSnapshot.val().period == "yes") {
+        objects[date] = {marked: true, selected: true, selectedColor: '#f58e91'};
+      }
+    } 
+  })
+  return objects;
 }
