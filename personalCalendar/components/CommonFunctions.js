@@ -12,34 +12,6 @@ export function getCurrentDate() {
     return formattedDate;
 }
 
-export function reformatDate(date) {
-    // Parse the input date string into a Date object
-  const dateParts = date.split('-');
-  const year = parseInt(dateParts[0]);
-  const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed in JavaScript
-  const day = parseInt(dateParts[2]);
-
-  const inputDateObj = new Date(year, month, day);
-
-  // Format the date components
-  const formattedDay = String(inputDateObj.getDate()).padStart(2, '0');
-  const formattedMonth = String(inputDateObj.getMonth() + 1).padStart(2, '0'); // Add 1 to month since it's 0-indexed
-  const formattedYear = String(inputDateObj.getFullYear());
-
-  // Combine the formatted components into the desired format
-  const formattedDate = `${formattedDay}-${formattedMonth}-${formattedYear}`;
-
-  return formattedDate;
-}
-
-const stringToDate = (date) => {
-// 2023-12-31
-  const [day, month, year] = date.split('-');
-  
-  const dateObject = `${year}-${month}-${day}`
-  return dateObject;
-}
-
 const arrayOfMoods = ["happy", "sad", "angry", "tired", "anxious"];
 const arrayOfFlows = ["none", "light", "medium", "heavy", "spotting"];
 const arrayOfPeriods = ["yes", "no"];
@@ -55,11 +27,15 @@ export const addToDatabase = async (index, type, date) => {
       return arrayOfPeriods[index];
     } else if(type === "image") {
       return "yes";
+    } else if(type === "latestPeriod") {
+      return date;
     }
   }
   try{
     if(type === "mood") {
     set(ref(db, `users/${uid}/${date}/${type}/${index}`), value());
+    } else if(type === "latestPeriod") {
+      set(ref(db, `users/${uid}/${type}`), value());
     } else {
       set(ref(db, `users/${uid}/${date}/${type}`), value());
     }
@@ -95,7 +71,7 @@ export const loggedDates = async () => {
 
   snapshot.forEach((childSnapshot) => {
     const numOfLogs = Object.keys(childSnapshot.val()).length;
-    const date = stringToDate(childSnapshot.key);
+    const date = childSnapshot.key;
     if(date.length > 10) {
       return false;
     }

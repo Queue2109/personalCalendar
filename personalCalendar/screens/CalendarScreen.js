@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { loggedDates as funLoggedDates, reformatDate } from '../components/CommonFunctions';
+import { loggedDates as funLoggedDates } from '../components/CommonFunctions';
 
 function CalendarScreen({navigation})  {
   const [loggedDates, setLoggedDates] = useState({});
@@ -22,9 +22,7 @@ function CalendarScreen({navigation})  {
           maxDate={'2023-12-31'}
           // Handler which gets executed on day press. Default = undefined
           onDayPress={(day) => {
-            console.log('selected day', day.dateString);
-            const reformattedDate = reformatDate(day.dateString);
-            navigation.replace('Day', {date: reformattedDate});
+            navigation.replace('Day', {date: day.dateString});
           }}
           markedDates={loggedDates}
 

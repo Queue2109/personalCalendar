@@ -4,7 +4,7 @@ import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { set, ref, get } from 'firebase/database';
 import { getCurrentDate } from '../components/CommonFunctions';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -26,9 +26,12 @@ const RegisterScreen = ({ navigation }) => {
             return;
         }
         const response = await createUserWithEmailAndPassword(auth, email, password);
-        addToDatabase(auth.currentUser.uid);
+        const token = await AsyncStorage.setItem('token', auth.currentUser.uid);
+        console.log(auth.currentUser.uid);
+
+        addToDatabase(token);
         // console.log(response);
-        navigation.replace('Day');
+        navigation.replace('FirstPeriod');
     } catch (error) {
         setError(error.message);
     }

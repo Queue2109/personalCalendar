@@ -16,9 +16,8 @@ import { getCurrentDate } from './components/CommonFunctions';
 import ImageScreen from './screens/dailyLogs/ImageScreen';
 import MoodScreen from './screens/dailyLogs/MoodScreen';
 import PeriodScreen from './screens/dailyLogs/PeriodScreen';
-import { CalendarIcon } from './components/CalendarIcon';
-import DropdownMenu from './components/DropdownMenu';
 import CustomHeader from './components/CustomHeader';
+import FirstPeriodScreen from './screens/dailyLogs/FirstPeriodScreen';
 
 const Stack = createStackNavigator();
 
@@ -52,7 +51,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialScreen}>
-        <Stack.Screen name="Register" component={RegisterScreen} options={{header: null}}/>
+        <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown: false}}/>
          <Stack.Screen name="Login" component={LoginScreen} />
          <Stack.Screen name="Calendar" component={CalendarScreen} />
          <Stack.Screen name="AddLogs" component={AddLogsScreen} />
@@ -65,6 +64,8 @@ export default function App() {
          <Stack.Screen name="Image" component={ImageScreen} />
          <Stack.Screen name="Mood" component={MoodScreen} options={{headerShown: false}} />
          <Stack.Screen name="Period" component={PeriodScreen} />
+         <Stack.Screen name="FirstPeriod" component={FirstPeriodScreen} options={{headerShown: false}} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

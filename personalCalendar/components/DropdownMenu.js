@@ -4,17 +4,24 @@ import { TouchableOpacity, Image } from "react-native";
 import { useState } from "react";
 import { auth } from '../firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from "@react-navigation/native";
 
 
 
-const DropdownMenu = ({navigation}) => {
+const DropdownMenu = () => {
+    const navigation = useNavigation();
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const logout = async () => {
-        await auth.signOut();
+        try {
+            await auth.signOut();
+            // Add any additional logic after signing out, such as navigation or AsyncStorage updates.
+          } catch (error) {
+            console.error('Error signing out:', error);
+          }
         navigation.replace('Login');
-        AsyncStorage.setItem('token', '');
+        await AsyncStorage.setItem('token', '');
     }
 
     return (
@@ -26,7 +33,7 @@ const DropdownMenu = ({navigation}) => {
             <View style={styles.container}>
                 <Text style={styles.text}>Profile</Text>
                 <Text style={styles.text}>Settings</Text>
-                <TouchableOpacity onPress={logout}>
+                <TouchableOpacity onPress={() => logout()}>
                     <Text style={styles.text}>Logout</Text> 
                 </TouchableOpacity>
             </View> : null}

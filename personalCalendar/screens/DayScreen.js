@@ -13,6 +13,7 @@ function DayScreen({navigation, route}) {
     
     const setDayFun = async () => {
         const token = await AsyncStorage.getItem('token');
+
         setCurrentUser(token);
     }
 
