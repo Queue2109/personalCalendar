@@ -29,7 +29,7 @@ const RegisterScreen = ({ navigation }) => {
         const token = await AsyncStorage.setItem('token', auth.currentUser.uid);
         console.log(auth.currentUser.uid);
 
-        addToDatabase(token);
+        addToDatabase(auth.currentUser.uid);
         // console.log(response);
         navigation.replace('FirstPeriod');
     } catch (error) {
