@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addToDatabase, setPeriod } from '../../components/CommonFunctions';
+import { addToDatabase, logPeriodDb } from '../../components/CommonFunctions';
 
 const FirstPeriodScreen = ({navigation}) => {
     const [selectedDate, setSelectedDate] = useState('');
@@ -12,7 +12,7 @@ const FirstPeriodScreen = ({navigation}) => {
         addToDatabase(0, "firstPeriod", day.dateString);
         addToDatabase(0, "period", day.dateString);
         // add database entries from firstPeriod to today
-        setPeriod(day.dateString);
+        logPeriodDb(day.dateString);
     };
 
     return (

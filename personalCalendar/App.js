@@ -54,7 +54,11 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown: false}}/>
          <Stack.Screen name="Login" component={LoginScreen} />
          <Stack.Screen name="Calendar" component={CalendarScreen} />
-         <Stack.Screen name="AddLogs" component={AddLogsScreen} />
+         <Stack.Screen name="AddLogs" component={AddLogsScreen} options={{
+          header: () => (
+            <CustomHeader></CustomHeader>
+          ),
+         }}/>
          <Stack.Screen name="Day" component={DayScreen} initialParams={{date: getCurrentDate(), }} options={{
           header: () => (
             <CustomHeader></CustomHeader>

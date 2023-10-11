@@ -1,25 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { loggedDates as funLoggedDates } from '../components/CommonFunctions';
+import { loggedDates as funLoggedDates, retrieveData } from '../components/CommonFunctions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CalendarScreen({navigation})  {
   const [loggedDates, setLoggedDates] = useState({});
+  const [firstPeriod, setFirstPeriod] = useState('');
   useEffect(() => {
     funLoggedDates().then((dates) => {
       setLoggedDates(dates);
     });
+    retrieveData("firstPeriod").then((date) => {
+      setFirstPeriod(date);
+    })
   }, [])
   
     return (
       <View style={styles.container}>
         <Calendar
-          // Initially visible month. Default = Date()
-          current={'2023-09-13'}
+        
+          current={Date()}
           // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-          minDate={'2023-01-01'}
+          minDate={undefined}
           // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-          maxDate={'2023-12-31'}
+          maxDate={undefined}
           // Handler which gets executed on day press. Default = undefined
           onDayPress={(day) => {
             navigation.replace('Day', {date: day.dateString});

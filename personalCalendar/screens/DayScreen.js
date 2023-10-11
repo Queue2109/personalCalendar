@@ -1,22 +1,26 @@
 import {React, useState, useEffect} from "react";
-import { View, StyleSheet, Text} from "react-native";
+import { View, StyleSheet, Text, Button, TouchableNativeFeedback, TouchableOpacity} from "react-native";
 import { db, storage } from '../firebaseConfig';
 import { getDownloadURL, ref as storageRef} from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AddLogsButton from "../components/AddLogsButton";
-import { databaseEntries } from "../components/CommonFunctions";
+import { retrieveData, reformatDate } from "../components/CommonFunctions";
 
 function DayScreen({navigation, route}) {
 
     const [image, setImage] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
-    const [dateFormat, setDateFormat] = useState('')
     const {date} = route.params;
     const [cycleDay, setCycleDay] = useState('');
+    const [displaySymptoms, setDisplaySymptoms] = useState(false);
 
     const setDayFun = async () => {
         const token = await AsyncStorage.getItem('token');
         setCurrentUser(token);
+        retrieveData("cycleDay", date).then((day) => {
+            setCycleDay("Cycle day " + day)
+        });
+        await AsyncStorage.setItem('currentDate', date);
     }
 
     const getImage = async () => {
@@ -43,26 +47,40 @@ function DayScreen({navigation, route}) {
     
     useEffect(() => {
         setDayFun();
+
     }, []);
     
     return (
         <View style={styles.container}>
-            <View style={styles.button}>
-                <AddLogsButton navigation={navigation} date={date}></AddLogsButton>
-            </View>
+        {displaySymptoms ? 
+        <View style={styles.symptomContainer}>
             <View>
                 <Text style={styles.heading}>{cycleDay}</Text>
             </View>
-            <View>
-                <Text style={styles.heading}>{dateFormat}</Text>
-            </View>
         </View> 
+        
+        :
+            <View style={styles.container} >
+            
+                <View style={styles.editButton}>
+                    <AddLogsButton navigation={navigation} date={date}></AddLogsButton>
+                </View>
+                <View>
+                    <Text style={styles.heading}>{cycleDay}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setDisplaySymptoms(true)} style={styles.button}>
+                    <Text style={styles.heading}>Symptoms</Text>
+                </TouchableOpacity> 
+            </View> }
+        </View>
+       
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 50,
+        
+        backgroundColor: 'red',
         position: 'relative',
         flex: 1,
         justifyContent: 'space-evenly'
@@ -74,7 +92,7 @@ const styles = StyleSheet.create({
     //     resizeMode: 'contain',
     //     alignItems: 'center',
     // },
-    button: {
+    editButton: {
         position: 'absolute',
         bottom: 20,
         right: 20,
@@ -83,6 +101,20 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    button: {
+        backgroundColor: 'pink',
+        borderRadius: 50,
+        paddingVertical: 20,
+        padding: 10,
+        marginHorizontal: 40,
+    },
+    symptomContainer: {
+        backgroundColor: 'pink',
+        margin: 20,
+        marginVertical: 100,
+        flex: 1,
+        justifyContent: 'center'
     }
     
 })
