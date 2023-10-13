@@ -28,6 +28,7 @@ const RegisterScreen = ({ navigation }) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const token = await AsyncStorage.setItem('token', auth.currentUser.uid);
         console.log(auth.currentUser.uid);
+        await AsyncStorage.setItem('lastDate', getCurrentDate());
 
         addToDatabase(auth.currentUser.uid);
         // console.log(response);

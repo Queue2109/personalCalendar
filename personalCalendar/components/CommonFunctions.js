@@ -1,4 +1,4 @@
-import { set, ref, get, child, orderByChild, equalTo, query } from "firebase/database";
+import { set, ref, get, child, orderByChild, equalTo, query, orderByKey, limitToLast, onChildAdded } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../firebaseConfig";
 
@@ -104,12 +104,17 @@ export const loggedDates = async () => {
 }
 
 // add database entries from firstPeriod to today for cycleDay
-export const databaseEntries = async (firstDate, lastDate) => {
+export const databaseEntries = async (firstDate, lastDate, cycleDay) => {
 
   let end = false;
   const date = new Date(firstDate);
   const uid = await AsyncStorage.getItem('token');
-  let cycleDay = 1
+  if(cycleDay === 0) {
+    retrieveData("cycleDay", firstDate).then((day) => {
+      cycleDay = day;
+      date.setDate(date.getDate() + 1);
+    }
+    )};
   
   // enter cycle days from firstDate to lastDate
   while (!end) {
@@ -147,9 +152,9 @@ export const logPeriodDb = async (date) => {
     // if the latest period was more recent than the logged one, set logged as a new latest period
     if(newDate > new Date(date)) {
       await addToDatabase(0, "firstPeriod", date)
-      await databaseEntries(date, firstPeriod)
+      await databaseEntries(date, firstPeriod, 1)
     } else if (newDate < new Date()) {
-      await databaseEntries(date, '')
+      await databaseEntries(date, '', 1)
     }
    }
 }
@@ -167,4 +172,12 @@ export const deletePeriodAfterDay = async (date) => {
   }
 }
 
-
+export const lastTimeOpened = async () => {
+  const currentDate = getCurrentDate()
+  const lastDate = await AsyncStorage.getItem('lastDate');
+  if(currentDate !== lastDate) {
+    await AsyncStorage.setItem('lastDate', currentDate);
+    databaseEntries(lastDate, currentDate, 0);
+    return true;
+  }
+}
