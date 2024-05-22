@@ -1,2 +1,2 @@
 # personalCalendar
-An app which will help with my personal health and keeping track of everyday activities.
+An app which acts like your personal calendar and can be used to log your period, track your symptoms and keep up with the changes in your body. 
